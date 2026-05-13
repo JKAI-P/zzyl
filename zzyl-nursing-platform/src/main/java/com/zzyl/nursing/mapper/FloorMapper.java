@@ -1,0 +1,78 @@
+package com.zzyl.nursing.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zzyl.nursing.domain.Floor;
+import com.zzyl.nursing.vo.FloorVo;
+import com.zzyl.nursing.vo.TreeVo;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+/**
+ * 楼层Mapper接口
+ *
+ */
+@Mapper
+public interface FloorMapper extends BaseMapper<Floor> {
+    /**
+     * 查询楼层
+     *
+     * @param id 楼层主键
+     * @return 楼层
+     */
+    Floor selectFloorById(Long id);
+
+    /**
+     * 查询楼层列表
+     *
+     * @param floor 楼层
+     * @return 楼层集合
+     */
+    List<Floor> selectFloorList(Floor floor);
+
+    /**
+     * 新增楼层
+     *
+     * @param floor 楼层
+     * @return 结果
+     */
+    int insertFloor(Floor floor);
+
+    /**
+     * 修改楼层
+     *
+     * @param floor 楼层
+     * @return 结果
+     */
+    int updateFloor(Floor floor);
+
+    /**
+     * 删除楼层
+     *
+     * @param id 楼层主键
+     * @return 结果
+     */
+    int deleteFloorById(Long id);
+
+    /**
+     * 批量删除楼层
+     *
+     * @param ids 需要删除的数据主键集合
+     * @return 结果
+     */
+    int deleteFloorByIds(Long[] ids);
+
+    /**
+     * 获取所有楼层 (有智能床位)
+     *
+     * @return
+     */
+    List<FloorVo> selectAllFloorsWithDevice();
+
+    /**
+     * 获取所有楼层 (负责老人)
+     *
+     * @return
+     */
+    List<Floor> selectAllByNur();
+}

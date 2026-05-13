@@ -16,10 +16,27 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.zzyl</groupId>
             <artifactId>zzyl-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zzyl</groupId>
+            <artifactId>zzyl-oss</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zzyl</groupId>
+            <artifactId>zzyl-framework</artifactId>
+        </dependency>
+
+        <!--qpid的依赖，通过amqp协议监听消息队列的数据-->
+        <dependency>
+            <groupId>org.apache.qpid</groupId>
+            <artifactId>qpid-jms-client</artifactId>
+            <version>0.61.0</version>
+        </dependency>
     </dependencies>
+
 </project>

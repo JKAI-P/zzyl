@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "启动后端",
+      "type": "java",
+      "request": "launch",
+      "mainClass": "com.zzyl.RuoYiApplication",
+      "projectName": "zzyl-admin",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "SPRING_PROFILES_ACTIVE": "dev"
+      }
+    },
+    {
+      "name": "启动前端",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/pengjunkai/Downloads/zzyl-ui",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "同时启动前后端",
+      "configurations": ["启动后端", "启动前端"],
+      "stopAll": true
+    }
+  ]
+}

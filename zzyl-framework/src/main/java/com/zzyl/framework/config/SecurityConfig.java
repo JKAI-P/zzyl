@@ -32,6 +32,7 @@ public class SecurityConfig
 {
     /**
      * 自定义用户认证逻辑
+     * 查询用户信息与权限信息
      */
     @Autowired
     private UserDetailsService userDetailsService;
@@ -68,12 +69,16 @@ public class SecurityConfig
 
     /**
      * 身份验证实现
+     * 认证管理器
      */
     @Bean
     public AuthenticationManager authenticationManager()
     {
+        // 数据访问，查询数据库
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        // 设置要获取用户信息的接口
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        // 密码校验器
         daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
         return new ProviderManager(daoAuthenticationProvider);
     }
@@ -92,6 +97,8 @@ public class SecurityConfig
      * permitAll           |   用户可以任意访问
      * rememberMe          |   允许通过remember-me登录的用户访问
      * authenticated       |   用户登录后可访问
+     *
+     * 过滤链：链式模式
      */
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception
@@ -101,6 +108,7 @@ public class SecurityConfig
             .csrf(csrf -> csrf.disable())
             // 禁用HTTP响应标头
             .headers((headersCustomizer) -> {
+                // 同源访问策略: 页面中嵌套了页面
                 headersCustomizer.cacheControl(cache -> cache.disable()).frameOptions(options -> options.sameOrigin());
             })
             // 认证失败处理类
@@ -109,9 +117,10 @@ public class SecurityConfig
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             // 注解标记允许匿名访问的url
             .authorizeHttpRequests((requests) -> {
+                // 是否是放行的，如果是，则放行
                 permitAllUrl.getUrls().forEach(url -> requests.antMatchers(url).permitAll());
                 // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-                requests.antMatchers("/login", "/register", "/captchaImage").permitAll()
+                requests.antMatchers("/login", "/register", "/captchaImage","/member/**").permitAll()
                     // 静态资源，可匿名访问
                     .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
                     .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
@@ -130,6 +139,8 @@ public class SecurityConfig
 
     /**
      * 强散列哈希加密实现
+     * MD5 32位字符串
+     * BCryptPasswordEncoder： 明文一样，每次加密后密文都不一样
      */
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder()

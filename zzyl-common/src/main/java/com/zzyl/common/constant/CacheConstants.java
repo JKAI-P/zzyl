@@ -41,4 +41,23 @@ public class CacheConstants
      * 登录账户密码错误次数 redis key
      */
     public static final String PWD_ERR_CNT_KEY = "pwd_err_cnt:";
+
+    /**
+     * Iot所有产品列表
+     */
+    public static final String ALL_PRODUCT_KEY = "iot:all_product";
+
+    /**
+     * 设备最后数据
+     */
+    public static final String IOT_DEVICE_LAST_DATA = "iot:device_last_data";
+
+    /**
+     * 报警规则连续触发次数，缓存前缀
+     */
+    public static final String ALERT_TRIGGER_COUNT_PREFIX = "iot:alert_trigger_count:";
+    /**
+     * 报警规则沉默周期，缓存前缀
+     */
+    public static final String ALERT_SILENT_PREFIX = "iot:alert_silent:";
 }

@@ -1,7 +1,7 @@
 create database if not exists zzyl;
+
 use zzyl;
 -- ----------------------------
-
 -- 1、部门表
 -- ----------------------------
 drop table if exists sys_dept;

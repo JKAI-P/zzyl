@@ -100,6 +100,9 @@ public class GenConstants
     /** 浮点型 */
     public static final String TYPE_DOUBLE = "Double";
 
+    /** LocalDateTime */
+    public static final String TYPE_LOCAL_DATE_TIME = "LocalDateTime";
+
     /** 高精度计算类型 */
     public static final String TYPE_BIGDECIMAL = "BigDecimal";
 
@@ -114,4 +117,10 @@ public class GenConstants
 
     /** 需要 */
     public static final String REQUIRE = "1";
+
+    /** MySql tinyint 类型 */
+    public static final String MYSQL_TINYINT = "tinyint";
+
+    /** MySql int 类型 */
+    public static final String MYSQL_INT = "int";
 }

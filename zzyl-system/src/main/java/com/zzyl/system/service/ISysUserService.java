@@ -203,4 +203,11 @@ public interface ISysUserService
      * @return 结果
      */
     public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
+
+    /**
+     * 根据部门编号，查询员工列表
+     * @param deptId
+     * @return
+     */
+    List<SysUser> getUserListByDept(Long deptId);
 }

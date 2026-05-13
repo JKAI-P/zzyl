@@ -74,7 +74,7 @@ public class CaptchaController
             capStr = code = captchaProducer.createText();
             image = captchaProducer.createImage(capStr);
         }
-
+        System.out.println("验证码 = " + code);
         redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
         // 转换流信息写出
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();

@@ -1,113 +1,68 @@
+//packageName就是包名
 package com.zzyl.nursing.domain;
+// 遍历, 遍历导入包列表
 
 import java.math.BigDecimal;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import com.zzyl.common.annotation.Excel;
 import com.zzyl.common.core.domain.BaseEntity;
 
 /**
  * 护理等级对象 nursing_level
- * 
- * @author ruoyi
- * @date 2026-05-11
+ *
  */
-public class NursingLevel extends BaseEntity
-{
+// 定义一个临时变量 Entity="BaseEntity"
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel(description = "护理等级实体")
+public class NursingLevel extends BaseEntity {
     private static final long serialVersionUID = 1L;
+// 遍历表中的每个列
+    /**
+     * 主键ID
+     */
+    @ApiModelProperty("主键ID")
+    private Integer id;
 
-    /** 主键ID */
-    private Long id;
-
-    /** 等级名称 */
+    /**
+     * 等级名称
+     */
     @Excel(name = "等级名称")
+    @ApiModelProperty("等级名称")
     private String name;
 
-    /** 护理计划ID */
+    /**
+     * 护理计划ID
+     */
     @Excel(name = "护理计划ID")
-    private Long lplanId;
+    @ApiModelProperty("护理计划ID")
+    private Integer lplanId;
 
-    /** 护理费用 */
+    /**
+     * 护理费用
+     */
     @Excel(name = "护理费用")
+    @ApiModelProperty("护理费用")
     private BigDecimal fee;
 
-    /** 状态（0：禁用，1：启用） */
+    /**
+     * 状态（0：禁用，1：启用）
+     */
     @Excel(name = "状态", readConverterExp = "0=：禁用，1：启用")
+    @ApiModelProperty("状态（0：禁用，1：启用）")
     private Integer status;
 
-    /** 等级说明 */
+    /**
+     * 等级说明
+     */
     @Excel(name = "等级说明")
+    @ApiModelProperty("等级说明")
     private String description;
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
-
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setName(String name) 
-    {
-        this.name = name;
-    }
-
-    public String getName() 
-    {
-        return name;
-    }
-    public void setLplanId(Long lplanId) 
-    {
-        this.lplanId = lplanId;
-    }
-
-    public Long getLplanId() 
-    {
-        return lplanId;
-    }
-    public void setFee(BigDecimal fee) 
-    {
-        this.fee = fee;
-    }
-
-    public BigDecimal getFee() 
-    {
-        return fee;
-    }
-    public void setStatus(Integer status) 
-    {
-        this.status = status;
-    }
-
-    public Integer getStatus() 
-    {
-        return status;
-    }
-    public void setDescription(String description) 
-    {
-        this.description = description;
-    }
-
-    public String getDescription() 
-    {
-        return description;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("name", getName())
-            .append("lplanId", getLplanId())
-            .append("fee", getFee())
-            .append("status", getStatus())
-            .append("description", getDescription())
-            .append("createTime", getCreateTime())
-            .append("createBy", getCreateBy())
-            .append("updateBy", getUpdateBy())
-            .append("remark", getRemark())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
 }

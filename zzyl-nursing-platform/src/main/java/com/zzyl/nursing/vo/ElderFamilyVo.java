@@ -1,0 +1,34 @@
+package com.zzyl.nursing.vo;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+/**
+ * 老人家属信息
+ *
+ */
+@ApiModel(description = "老人家属信息")
+@Data
+public class ElderFamilyVo {
+
+    /**
+     * 姓名
+     */
+    @ApiModelProperty(value = "姓名")
+    private String name;
+
+
+    /**
+     * 联系方式
+     */
+    @ApiModelProperty(value = "联系方式")
+    private String phone;
+
+    /**
+     * 亲属关系
+     */
+    @ApiModelProperty(value = "亲属关系")
+    private String kinship;
+
+}

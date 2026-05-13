@@ -1,19 +1,20 @@
 package com.zzyl.nursing.service;
 
-import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.zzyl.common.core.page.TableDataInfo;
 import com.zzyl.nursing.domain.NursingProject;
+import com.zzyl.nursing.vo.NursingProjectVo;
+
+import java.util.List;
 
 /**
  * 护理项目Service接口
- * 
- * @author ruoyi
- * @date 2026-05-11
+ *
  */
-public interface INursingProjectService 
-{
+public interface INursingProjectService extends IService<NursingProject> {
     /**
      * 查询护理项目
-     * 
+     *
      * @param id 护理项目主键
      * @return 护理项目
      */
@@ -21,7 +22,7 @@ public interface INursingProjectService
 
     /**
      * 查询护理项目列表
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 护理项目集合
      */
@@ -29,7 +30,7 @@ public interface INursingProjectService
 
     /**
      * 新增护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
@@ -37,7 +38,7 @@ public interface INursingProjectService
 
     /**
      * 修改护理项目
-     * 
+     *
      * @param nursingProject 护理项目
      * @return 结果
      */
@@ -45,7 +46,7 @@ public interface INursingProjectService
 
     /**
      * 批量删除护理项目
-     * 
+     *
      * @param ids 需要删除的护理项目主键集合
      * @return 结果
      */
@@ -53,9 +54,24 @@ public interface INursingProjectService
 
     /**
      * 删除护理项目信息
-     * 
+     *
      * @param id 护理项目主键
      * @return 结果
      */
     public int deleteNursingProjectById(Long id);
+
+    List<NursingProjectVo> selectAll();
+
+    /**
+     * 分页查询护理项目（小程序端）
+     *
+     * @param pageNum  当前页码
+     * @param pageSize 每页显示记录数
+     * @param name     护理项目名称
+     * @param status   状态
+     * @return 分页数据
+     */
+    TableDataInfo<NursingProject> pageByNameAndStatus(Integer pageNum, Integer pageSize, String name, Integer status);
+
+    ;
 }

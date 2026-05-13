@@ -1,6 +1,8 @@
 package com.zzyl.framework.config;
 
 import java.util.concurrent.TimeUnit;
+
+import com.zzyl.framework.interceptor.MemberInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,17 @@ public class ResourcesConfig implements WebMvcConfigurer
     @Autowired
     private RepeatSubmitInterceptor repeatSubmitInterceptor;
 
+    @Autowired
+    private MemberInterceptor memberInterceptor;
+
+    /**
+     * 放行的路径
+     */
+    private static final String[] EXCLUDE_PATH_PATTERNS = new String[] {
+            "/member/user/login",
+            "/member/roomTypes"
+    };
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry)
     {
@@ -46,6 +59,8 @@ public class ResourcesConfig implements WebMvcConfigurer
     public void addInterceptors(InterceptorRegistry registry)
     {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(memberInterceptor).addPathPatterns("/member/**")
+                .excludePathPatterns(EXCLUDE_PATH_PATTERNS);
     }
 
     /**

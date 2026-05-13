@@ -31,11 +31,33 @@
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
+        <spring-boot-dependencies.version>2.5.15</spring-boot-dependencies.version>
+        <lombok.version>1.18.30</lombok.version>
+        <mybatis-plus-spring-boot.version>3.5.2</mybatis-plus-spring-boot.version>
+        <aliyun.sdk.oss>3.17.4</aliyun.sdk.oss>
+        <hutool-all.version>5.8.10</hutool-all.version>
+        <jackson.version>2.15.3</jackson.version>
     </properties>
 
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
+            <!-- 强制统一版本 -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
             <!-- SpringFramework的依赖配置-->
             <dependency>
@@ -59,7 +81,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.5.15</version>
+                <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -181,11 +203,49 @@
                 <artifactId>zzyl-common</artifactId>
                 <version>${zzyl.version}</version>
             </dependency>
-            <!-- 业务模块-->
+
+            <!--养老业务模块-->
             <dependency>
                 <groupId>com.zzyl</groupId>
                 <artifactId>zzyl-nursing-platform</artifactId>
                 <version>${zzyl.version}</version>
+            </dependency>
+
+            <!--OSS-->
+            <dependency>
+                <groupId>com.zzyl</groupId>
+                <artifactId>zzyl-oss</artifactId>
+                <version>${zzyl.version}</version>
+            </dependency>
+
+            <!--Lombok-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <!-- mybatis-plus 增强CRUD -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-annotation</artifactId>
+                <version>${mybatis-plus-spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun.sdk.oss}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-all.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -198,6 +258,7 @@
         <module>zzyl-generator</module>
         <module>zzyl-common</module>
         <module>zzyl-nursing-platform</module>
+        <module>zzyl-oss</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -206,7 +267,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
