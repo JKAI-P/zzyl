@@ -75,4 +75,11 @@ public interface FloorMapper extends BaseMapper<Floor> {
      * @return
      */
     List<Floor> selectAllByNur();
+
+    /**
+     * 根据状态获取房间和床位信息
+     * @param status 状态
+     * @return 结果
+     */
+    List<TreeVo> getRoomAndBedByBedStatus(Integer status);
 }

@@ -101,4 +101,14 @@ public class FloorController extends BaseController {
         return R.ok(list);
     }
 
+    /**
+     * 按照状态查询楼层房间床位-树形结构
+     */
+    @GetMapping("/getRoomAndBedByBedStatus/{status}")
+    @ApiOperation("按照状态查询楼层房间床位-树形结构")
+    public R<List<TreeVo>> getRoomAndBedByBedStatus(@ApiParam(value = "床位状态(未入住0, 已入住1)", required = true) @PathVariable("status") Integer status){
+        List<TreeVo> list = floorService.getRoomAndBedByBedStatus(status);
+        return R.ok(list);
+    }
+
 }

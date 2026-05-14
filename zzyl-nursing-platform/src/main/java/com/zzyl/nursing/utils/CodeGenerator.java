@@ -4,45 +4,42 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * 编号生成器
+ * 生成16位编号：前12位为时间(yyyyMMddHHmmss)，后4位为递增序号(0001-9999)
+ */
 public class CodeGenerator {
 
-    //原子操作类,多线程下安全，CAS锁 乐观锁, 自增长
-    private static final AtomicInteger counter = new AtomicInteger(1);
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-    private static final int MAX_COUNTER = 9999;
-
-    // 私有构造函数避免实例化
-    private CodeGenerator() {
-        throw new AssertionError("Utility class cannot be instantiated.");
-    }
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    private static volatile String lastTimeStr = "";
+    private static final AtomicInteger sequence = new AtomicInteger(0);
 
     /**
-     * 生成一个16位的合同编号。
-     * 
-     * @return 16位的合同编号字符串。
+     * 生成合同编号
+     * @return 16位合同编号
      */
-    public static String generateContractNumber() {
-        // 获取当前时间并格式化
-        String currentTime = LocalDateTime.now().format(formatter);
-
-        // 获取并递增计数器
-        int count = counter.getAndIncrement();// 自增长 i=i+1   i+1=2   i=2
-        if (count > MAX_COUNTER) {
-            // 如果计数器超过最大值，则重置为最小值
-            count = 1;
-            counter.set(count);
+    public static synchronized String generateContractNumber() {
+        String currentTimeStr = LocalDateTime.now().format(FORMATTER);
+        
+        // 如果时间发生变化，重置序号
+        if (!currentTimeStr.equals(lastTimeStr)) {
+            lastTimeStr = currentTimeStr;
+            sequence.set(1);
+        } else {
+            // 同一秒内，序号递增
+            sequence.incrementAndGet();
         }
-
-        // 将计数器格式化为4位字符串，%d数字， 04表示前面补0，4表示长度为4。长度不够4位时，前而补0
-        String countStr = String.format("%04d", count);
-
-        // 返回完整的合同编号
-        return currentTime + countStr;
-    }
-
-    public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
-            System.out.println(generateContractNumber());
+        
+        // 确保序号在1-9999范围内
+        int seq = sequence.get();
+        if (seq > 9999) {
+            seq = 1;
+            sequence.set(1);
         }
+        
+        // 格式化序号为4位，不足补0
+        String seqStr = String.format("%04d", seq);
+        
+        return currentTimeStr + seqStr;
     }
 }

@@ -36,7 +36,8 @@
         <mybatis-plus-spring-boot.version>3.5.2</mybatis-plus-spring-boot.version>
         <aliyun.sdk.oss>3.17.4</aliyun.sdk.oss>
         <hutool-all.version>5.8.10</hutool-all.version>
-        <jackson.version>2.15.3</jackson.version>
+        <jackson.version>2.18.2</jackson.version>
+        <kotlin.version>1.8.0</kotlin.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -247,7 +248,34 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool-all.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>4.12.0</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>logging-interceptor</artifactId>
+                <version>4.12.0</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-bom</artifactId>
+                <version>${kotlin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <modules>
@@ -272,6 +300,13 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

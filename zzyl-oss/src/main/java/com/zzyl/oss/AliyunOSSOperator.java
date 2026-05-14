@@ -2,8 +2,8 @@ package com.zzyl.oss;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.CredentialsProviderFactory;
-import com.aliyun.oss.common.auth.EnvironmentVariableCredentialsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +20,12 @@ public class AliyunOSSOperator {
     public String upload(byte[] content, String originalFilename) throws Exception {
         String endpoint = ossProperties.getEndpoint();
         String bucketName = ossProperties.getBucketName();
-        // 从环境变量中获取访问凭证。运行本代码示例之前，请确保已设置环境变量OSS_ACCESS_KEY_ID和OSS_ACCESS_KEY_SECRET。
-        EnvironmentVariableCredentialsProvider defaultCredentialProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
+
+        // 使用配置文件中的AccessKey
+        CredentialsProvider credentialsProvider = CredentialsProviderFactory.newDefaultCredentialProvider(
+                ossProperties.getAccessKeyId(),
+                ossProperties.getAccessKeySecret()
+        );
 
         // 填写Object完整路径，例如202406/1.png。Object完整路径中不能包含Bucket名称。
         // 获取当前系统日期的字符串,格式为 yyyy/MM
@@ -31,7 +35,7 @@ public class AliyunOSSOperator {
         String objectName = dir + "/" + newFileName;
 
         // 创建OSSClient实例。
-        OSS ossClient = new OSSClientBuilder().build(endpoint, defaultCredentialProvider);
+        OSS ossClient = new OSSClientBuilder().build(endpoint, credentialsProvider);
 
         // 文件上传
         try {

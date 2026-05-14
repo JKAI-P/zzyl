@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzyl.nursing.mapper.CheckInMapper">
-    
+
     <resultMap type="CheckIn" id="CheckInResult">
         <result property="id"    column="id"    />
         <result property="elderName"    column="elder_name"    />
@@ -26,21 +26,57 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, elder_name, elder_id, id_card_no, start_date, end_date, nursing_level_name, bed_number, status, sort_order, create_time, update_time, create_by, update_by, remark from check_in
     </sql>
 
-    <select id="selectCheckInList" parameterType="CheckIn" resultMap="CheckInResult">
-        <include refid="selectCheckInVo"/>
-        <where>  
-            <if test="elderName != null  and elderName != ''"> and elder_name like concat('%', #{elderName}, '%')</if>
-            <if test="elderId != null "> and elder_id = #{elderId}</if>
-            <if test="idCardNo != null  and idCardNo != ''"> and id_card_no = #{idCardNo}</if>
-            <if test="startDate != null "> and start_date = #{startDate}</if>
-            <if test="endDate != null "> and end_date = #{endDate}</if>
-            <if test="nursingLevelName != null  and nursingLevelName != ''"> and nursing_level_name like concat('%', #{nursingLevelName}, '%')</if>
-            <if test="bedNumber != null  and bedNumber != ''"> and bed_number = #{bedNumber}</if>
-            <if test="status != null "> and status = #{status}</if>
-            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+    <!-- 统一的入住VO ResultMap，列表和详情共用 -->
+    <resultMap type="CheckInDetailVo" id="CheckInDetailResult">
+        <id property="id" column="id"/>
+        <result property="elderName" column="elder_name"/>
+        <result property="elderId" column="elder_id"/>
+        <result property="idCardNo" column="id_card_no"/>
+        <result property="sex" column="sex"/>
+        <result property="phone" column="phone"/>
+        <result property="address" column="address"/>
+        <result property="image" column="image"/>
+        <result property="bedNumber" column="bed_number"/>
+        <result property="floorName" column="floor_name"/>
+        <result property="roomCode" column="room_code"/>
+        <result property="nursingLevelName" column="nursing_level_name"/>
+        <result property="startDate" column="start_date" typeHandler="com.zzyl.nursing.handler.LocalDateTimeTypeHandler"/>
+        <result property="endDate" column="end_date" typeHandler="com.zzyl.nursing.handler.LocalDateTimeTypeHandler"/>
+        <result property="feeStartDate" column="fee_start_date" typeHandler="com.zzyl.nursing.handler.LocalDateTimeTypeHandler"/>
+        <result property="feeEndDate" column="fee_end_date" typeHandler="com.zzyl.nursing.handler.LocalDateTimeTypeHandler"/>
+        <result property="bedFee" column="bed_fee"/>
+        <result property="nursingFee" column="nursing_fee"/>
+        <result property="deposit" column="deposit"/>
+        <result property="governmentSubsidy" column="government_subsidy"/>
+        <result property="insurancePayment" column="insurance_payment"/>
+        <result property="otherFees" column="other_fees"/>
+        <result property="contractStatus" column="contract_status"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <!-- 列表查询（JOIN楼层、房间、合同） -->
+    <select id="selectCheckInList" parameterType="CheckIn" resultMap="CheckInDetailResult">
+        SELECT ci.id, ci.elder_name, ci.elder_id, ci.id_card_no, ci.start_date, ci.end_date,
+               ci.nursing_level_name, ci.bed_number, ci.status,
+               f.name AS floor_name, r.code AS room_code, c.status AS contract_status
+        FROM check_in ci
+        LEFT JOIN bed b ON ci.bed_number COLLATE utf8mb4_unicode_ci = b.bed_number COLLATE utf8mb4_unicode_ci
+        LEFT JOIN room r ON b.room_id = r.id
+        LEFT JOIN floor f ON r.floor_id = f.id
+        LEFT JOIN contract c ON ci.id = c.check_in_id
+        <where>
+            <if test="elderName != null and elderName != ''"> AND ci.elder_name LIKE CONCAT('%', #{elderName}, '%')</if>
+            <if test="elderId != null"> AND ci.elder_id = #{elderId}</if>
+            <if test="idCardNo != null and idCardNo != ''"> AND ci.id_card_no LIKE CONCAT('%', #{idCardNo}, '%')</if>
+            <if test="bedNumber != null and bedNumber != ''"> AND ci.bed_number LIKE CONCAT('%', #{bedNumber}, '%')</if>
+            <if test="nursingLevelName != null and nursingLevelName != ''"> AND ci.nursing_level_name LIKE CONCAT('%', #{nursingLevelName}, '%')</if>
+            <if test="status != null"> AND ci.status = #{status}</if>
+            <if test="startDate != null"> AND ci.start_date &gt;= DATE(#{startDate})</if>
+            <if test="endDate != null"> AND ci.end_date &lt;= DATE(#{endDate})</if>
         </where>
+        ORDER BY ci.create_time DESC
     </select>
-    
+
     <select id="selectCheckInById" parameterType="Long" resultMap="CheckInResult">
         <include refid="selectCheckInVo"/>
         where id = #{id}
@@ -108,9 +144,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteCheckInByIds" parameterType="String">
-        delete from check_in where id in 
+        delete from check_in where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
+
+    <!-- 详情查询（单次JOIN，替代N+1） -->
+    <select id="selectCheckInDetail" parameterType="Long" resultMap="CheckInDetailResult">
+        SELECT ci.id,
+               e.name AS elder_name, e.id_card_no, e.sex, e.phone, e.address, e.image,
+               e.birthday, e.id_card_portrait_img, e.id_card_national_emblem_img, e.bed_id,
+               ci.bed_number,
+               f.name AS floor_name, f.id AS floor_id,
+               r.code AS room_code, r.id AS room_id,
+               b.id AS bed_id_from_bed,
+               cic.nursing_level_id, cic.nursing_level_name,
+               ci.start_date, ci.end_date,
+               cic.fee_start_date, cic.fee_end_date,
+               cic.bed_fee, cic.nursing_fee, cic.deposit,
+               cic.government_subsidy, cic.insurance_payment, cic.other_fees
+        FROM check_in ci
+        LEFT JOIN elder e ON ci.elder_id = e.id
+        LEFT JOIN bed b ON ci.bed_number COLLATE utf8mb4_unicode_ci = b.bed_number COLLATE utf8mb4_unicode_ci
+        LEFT JOIN room r ON b.room_id = r.id
+        LEFT JOIN floor f ON r.floor_id = f.id
+        LEFT JOIN check_in_config cic ON ci.id = cic.check_in_id
+        WHERE ci.id = #{id}
+    </select>
 </mapper>

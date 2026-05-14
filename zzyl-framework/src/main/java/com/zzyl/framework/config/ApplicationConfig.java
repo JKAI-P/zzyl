@@ -1,5 +1,7 @@
 package com.zzyl.framework.config;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
@@ -25,6 +27,14 @@ public class ApplicationConfig
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization()
     {
-        return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder.timeZone(TimeZone.getDefault());
+        return jacksonObjectMapperBuilder -> {
+            jacksonObjectMapperBuilder.timeZone(TimeZone.getDefault());
+            // 配置 LocalDateTime 的序列化和反序列化格式
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            jacksonObjectMapperBuilder.serializerByType(LocalDateTime.class, 
+                new com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer(formatter));
+            jacksonObjectMapperBuilder.deserializerByType(LocalDateTime.class, 
+                new com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer(formatter));
+        };
     }
 }

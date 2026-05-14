@@ -22,7 +22,9 @@ import com.zzyl.common.core.controller.BaseController;
 import com.zzyl.common.core.domain.AjaxResult;
 import com.zzyl.common.enums.BusinessType;
 import com.zzyl.nursing.domain.CheckIn;
+import com.zzyl.nursing.dto.CheckInApplyDto;
 import com.zzyl.nursing.service.ICheckInService;
+import com.zzyl.nursing.vo.CheckInDetailVo;
 import com.zzyl.common.utils.poi.ExcelUtil;
 import com.zzyl.common.core.page.TableDataInfo;
 
@@ -45,9 +47,9 @@ public class CheckInController extends BaseController {
     @PreAuthorize("@ss.hasPermi('nursing:checkIn:list')")
     @GetMapping("/list")
     @ApiOperation(value = "获取入住列表")
-    public TableDataInfo<CheckIn> list(CheckIn checkIn) {
+    public TableDataInfo<CheckInDetailVo> list(CheckIn checkIn) {
         startPage();
-        List<CheckIn> list = checkInService.selectCheckInList(checkIn);
+        List<CheckInDetailVo> list = checkInService.selectCheckInList(checkIn);
         return getDataTable(list);
     }
 
@@ -59,8 +61,8 @@ public class CheckInController extends BaseController {
     @PostMapping("/export")
     @ApiOperation("导出入住列表")
     public void export(HttpServletResponse response, CheckIn checkIn) {
-        List<CheckIn> list = checkInService.selectCheckInList(checkIn);
-        ExcelUtil<CheckIn> util = new ExcelUtil<CheckIn>(CheckIn.class);
+        List<CheckInDetailVo> list = checkInService.selectCheckInList(checkIn);
+        ExcelUtil<CheckInDetailVo> util = new ExcelUtil<CheckInDetailVo>(CheckInDetailVo.class);
         util.exportExcel(response, list, "入住数据");
     }
 
@@ -106,5 +108,25 @@ public class CheckInController extends BaseController {
     @ApiOperation("删除入住")
     public AjaxResult remove(@ApiParam(value = "要删除的数据id的数组") @PathVariable Long[] ids) {
         return toAjax(checkInService.deleteCheckInByIds(ids));
+    }
+
+    /**
+     * 申请入住
+     */
+    @PostMapping("/apply")
+    @ApiOperation("申请入住")
+    public AjaxResult apply(@RequestBody CheckInApplyDto dto){
+        checkInService.apply(dto);
+        return AjaxResult.success();
+    }
+
+    /**
+     * 查询入住详情
+     */
+    @GetMapping("/detail/{id}")
+    @ApiOperation("查询入住详情")
+    public R<CheckInDetailVo> detail(@PathVariable("id") Long id){
+        CheckInDetailVo vo = checkInService.detail(id);
+        return R.ok(vo);
     }
 }
